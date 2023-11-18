@@ -1,3 +1,5 @@
+import struct, math
+
 # DATATYPE MAPPING
 TEMPLATE  = 0
 UINT      = 1
@@ -15,7 +17,7 @@ LARGEDICT = 11
 # map of values in 'VARIA'
 FALSE = 0
 TRUE  = 1
-NONE  = 3
+NONE  = 2
 
 def getWeirdEndian(num):
     big    = num >> 16
@@ -42,8 +44,8 @@ def addVaria(arr, val):
     if type(val) == bool:
         v = int(val)
     else:
-        v = 3
-        
+        v = 2
+
     arr.append((VARIA << 4) + v)
 
 def addString(arr, val):
@@ -60,7 +62,7 @@ def addString(arr, val):
 
     arr += stringArr
 
-def addInt(arr:bytearray, val):
+def addUInt(arr:bytearray, val):
     binVal = bin(val)[2:]
     chunks = splitInChunks(binVal, 8)
     len_ = len(chunks)
@@ -73,7 +75,71 @@ def addInt(arr:bytearray, val):
     for chunk in chunks:
         arr.append(int(chunk, 2))
 
-def addDict(arr, dict_):
+def makeNegative(bitstring:str):
+    bits = bitstring
+    bits = bits.zfill(math.ceil(len(bits) / 8) * 8)
+
+    # invert
+    temp = ""
+    for bit in bits:
+        if bit == "0":
+            temp += "1"
+        else:
+            temp += "0"
+
+    bits = temp
+
+    intVal = int(bits, 2)+1
+
+    bits = bin(intVal)[2:]
+    bits = bits.zfill(math.ceil(len(bits)/8)*8)
+
+    return bits
+
+def addSInt(arr:bytearray, val:int):
+    binVal = bin(abs(val))[2:]
+
+    if val < 0:
+        binVal = makeNegative(binVal)
+
+    chunks = splitInChunks(binVal, 8)
+
+    arr.append((SINT << 4) + len(chunks))
+
+    for chunk in chunks:
+        arr.append(int(chunk, 2))
+
+def float_to_bin(num):
+    return format(struct.unpack('!I', struct.pack('!f', num))[0], '032b')
+
+def addFloat(arr:bytearray, val):
+    binVal = float_to_bin(val)
+    chunks = splitInChunks(binVal, 8)
+    len_ = len(chunks)
+
+    arr.append((FLOAT << 4) + len_)
+    for chunk in chunks:
+        arr.append(int(chunk, 2))
+    
+
+def addList(arr:bytearray, val:list):
+    len_ = len(val)
+    big, medium, small = getWeirdEndian(len_)
+
+    if len_ < 16:
+        arr.append((SMALLLIST << 4) + small)
+    elif len_ < 4096:
+        arr.append((MEDLIST << 4) + medium)
+        arr.append(small)
+    elif len_ < 1048576:
+        arr.append((LARGELIST << 4) + big)
+        arr.append(medium)
+        arr.append(small)
+    
+    for i in val:
+        addSomeVal(arr, i)
+
+def addDict(arr:bytearray, dict_:dict):
     
     len_ = len(tuple(dict_.keys()))
     big, medium, small = getWeirdEndian(len_)
@@ -91,29 +157,33 @@ def addDict(arr, dict_):
         raise ValueError(f"Too many dictionary entries!")
 
     for key in dict_.keys():
-        if type(key) == str:
-            addString(arr, key)
-        elif type(key) == int:
-            addInt(arr, key)
-        elif type(key) == bool:
-            addVaria(arr, key)
-        else:
-            raise TypeError(f"Can't use type '{type(key).__name__}' as key in dictionary!")
+        addSomeVal(arr, key)
         
         val = dict_[key]
-        if type(val) == str:
-            addString(arr, val)
-        elif type(val) == int:
-            addInt(arr, val)
-        elif type(val) == bool:
-            addVaria(arr, val)
+        addSomeVal(arr, val)
 
-def dump(object:dict):
-    if not type(object) == dict:
-        raise NotImplementedError("PyObj.dump() only works on dictionaries")
-    
+def addSomeVal(arr, object):
+    if type(object) == str:
+        addString(arr, object)
+    elif type(object) == int:
+        if object >= 0:
+            addUInt(arr, object)
+        else:
+            addSInt(arr, object)
+    elif type(object) == float:
+        addFloat(arr, object)
+    elif type(object) == bool or object == None:
+        addVaria(arr, object)
+    elif type(object) == dict:
+        addDict(arr, object)
+    elif type(object) == list or type(object) == tuple:
+        addList(arr, object)
+    else:
+        raise NotImplementedError(f"Can't add item of type '{type(object).__name__}'")
+
+def dump(object:any):
     arr = bytearray()
-    addDict(arr, object)
+    addSomeVal(arr, object)
 
     return arr
     
