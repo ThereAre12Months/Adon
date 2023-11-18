@@ -14,7 +14,7 @@ Type mapping:
    - dict
   1000 dict:small  0 - 15
   1001 dict:medium 0 - 4096
-  1010 dict:large  0 - 1048575
+  1010 dict:large  0 - 1048576
 
 Composition:
   
