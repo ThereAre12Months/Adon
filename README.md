@@ -1,38 +1,38 @@
-# PyObj
- PyObj is a faster, more efficient alternative to JSON
+# Adon
+ Adon is a faster, more efficient alternative to JSON
 
-### Why would you use PyObj instead of JSON?
- - PyObj files are on average 1.4x smaller then a JSON file.
- - In PyObj a lot of the limitations of JSON are gone. (any type can be used as a key in a dictionary)
+### Why would you use Adon instead of JSON?
+ - Adon files are on average 1.4x smaller then a JSON file.
+ - In Adon a lot of the limitations of JSON are gone. (any type can be used as a key in a dictionary)
 
 # Usage
-You can use PyObj in the terminal and in a python script.
+You can use Adon in the terminal and in a python script.
 
 ## Terminal
-### Compiling JSON to PyObj
-You can compile JSON to PyObj with the `pyo -c` command, followed by the name of the JSON file and optionally the name of the PyObj file.
+### Compiling JSON to Adon
+You can compile JSON to Adon with the `adon -c` command, followed by the name of the JSON file and optionally the name of the Adon file.
 
-`pyo -c someFile.json someFile.pyo`  
-  -> compiles 'someFile.json' to 'someFile.pyo'  
+`adon -c someFile.json someFile.adon`  
+  -> compiles 'someFile.json' to 'someFile.adon'  
 
-`pyo -c otherFile.json`  
-  -> compiles 'otherFile.json' to 'otherFile.pyo'
+`adon -c otherFile.json`  
+  -> compiles 'otherFile.json' to 'otherFile.adon'
 ***
-### Decompiling PyObj to JSON
-You can decompile PyObj to JSON using the `pyo -d` command, followed by the PyObj file and optionally the JSON file.  
+### Decompiling Adon to JSON
+You can decompile Adon to JSON using the `adon -d` command, followed by the Adon file and optionally the JSON file.  
 
-`pyo -d someFile.pyo someFile.json`  
-  -> decompiles 'someFile.pyo' to 'someFile.json'
+`adon -d someFile.adon someFile.json`  
+  -> decompiles 'someFile.adon' to 'someFile.json'
 
-`pyo -d otherFile.pyo`  
-  -> decompiles 'otherFile.pyo' to 'otherFile.json'
+`adon -d otherFile.adon`  
+  -> decompiles 'otherFile.adon' to 'otherFile.json'
 
 ## Python script
-### Compiling Python Object to PyObj
-The PyObj module has a function `dump()` that can be used to convert a Python object to a bytearray with PyObj formatting.
+### Compiling Python Object to Adon
+The Adon module has a function `dump()` that can be used to convert a Python object to a bytearray with Adon formatting.
 
 ```python
-import pyobj
+import adon
 
 product = {
     "name": "Magic Wand",
@@ -41,23 +41,23 @@ product = {
     "category": "magic"
 }
 
-obj = pyobj.dump(product)
+obj = adon.dump(product)
 ```
 
-This PyObj object can than be used on its own, or it can be written to a file:
+This Adon object can than be used on its own, or it can be written to a file:
 ```python
-with open("fileName.pyo", "wb") as f:
+with open("fileName.adon", "wb") as f:
     f.write(obj)
 ```
 
 **Note that currently only strings, integers, floats, booleans, lists and dictionaries are supported.**
 ***
 
-### Decompiling PyObj back to Python Object
-The PyObj module also contains a function to revert the PyObj back to a python object.
+### Decompiling Adon back to Python Object
+The Adon module also contains a function to revert the Adon back to a Python object.
 
 ```python
-import pyobj
+import adon
 
 fruits = [
     "banana",
@@ -65,11 +65,11 @@ fruits = [
     "mango"
 ]
 
-# convert to PyObj
-obj = pyobj.dump(someFruit)
+# convert to Adon
+obj = adon.dump(someFruit)
 
 # convert to Python object
-val = pyobj.load(obj)
+val = adon.load(obj)
 
 print(val) 
 # ['banana', 'apple', 'mango']

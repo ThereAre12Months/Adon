@@ -5,7 +5,7 @@ from .load import load
 
 def main():
     parser = argparse.ArgumentParser(
-        prog='PyObj',
+        prog='Adon',
         description='Converts JSON and Objects to a more compact format!',
         epilog='')
     
@@ -15,24 +15,24 @@ def main():
     args = parser.parse_args()
 
     if len(args.compile) == 1:
-        jsonToPyObj(args.compile[0], os.path.splitext(args.compile[0])+".pyo")
+        jsonToAdon(args.compile[0], os.path.splitext(args.compile[0])+".adon")
     elif len(args.compile) == 2:
-        jsonToPyObj(args.compile[0], args.compile[1])
+        jsonToAdon(args.compile[0], args.compile[1])
 
     if len(args.decompile) == 1:
-        PyObjToJson(args.decompile[0], os.path.splitext(args.decompile[0])+".pyo")
+        AdonToJson(args.decompile[0], os.path.splitext(args.decompile[0])+".adon")
     elif len(args.decompile) == 2:
-        PyObjToJson(args.decompile[0], args.decompile[1])
+        AdonToJson(args.decompile[0], args.decompile[1])
     
 
-def jsonToPyObj(jsonPath, newPath):
+def jsonToAdon(jsonPath, newPath):
     with open(jsonPath, "r") as f:
         dict_ = json.load(f)
 
     with open(newPath, "wb") as f:
         f.write(dump(dict_))
 
-def PyObjToJson(oldPath, newPath):
+def AdonToJson(oldPath, newPath):
     with open(oldPath, "rb") as f:
         dict_ = load(bytearray(f.read()))
 
