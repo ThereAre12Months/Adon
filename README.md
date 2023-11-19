@@ -5,6 +5,12 @@
  - Adon files are on average 1.4x smaller then a JSON file.
  - In Adon a lot of the limitations of JSON are gone. (any type can be used as a key in a dictionary)
 
+# Installation
+**Using pip:**  
+
+    python -m pip install adon  
+
+
 # Usage
 You can use Adon in the terminal and in a python script.
 
@@ -12,20 +18,31 @@ You can use Adon in the terminal and in a python script.
 ### Compiling JSON to Adon
 You can compile JSON to Adon with the `adon -c` command, followed by the name of the JSON file and optionally the name of the Adon file.
 
-`adon -c someFile.json someFile.adon`  
-  -> compiles 'someFile.json' to 'someFile.adon'  
+```bash
+adon -c someFile.json someFile.adon  
+```
+ \- compiles 'someFile.json' to 'someFile.adon'  
 
-`adon -c otherFile.json`  
-  -> compiles 'otherFile.json' to 'otherFile.adon'
+<br>
+
+```bash
+adon -c otherFile.json  
+```
+ \- compiles 'otherFile.json' to 'otherFile.adon'
 ***
 ### Decompiling Adon to JSON
 You can decompile Adon to JSON using the `adon -d` command, followed by the Adon file and optionally the JSON file.  
 
-`adon -d someFile.adon someFile.json`  
-  -> decompiles 'someFile.adon' to 'someFile.json'
+```bash
+adon -d someFile.adon someFile.json
+```  
+ \- decompiles 'someFile.adon' to 'someFile.json'  
+<br>
 
-`adon -d otherFile.adon`  
-  -> decompiles 'otherFile.adon' to 'otherFile.json'
+```bash
+adon -d otherFile.adon
+```  
+ \- decompiles 'otherFile.adon' to 'otherFile.json'
 
 ## Python script
 ### Compiling Python Object to Adon
