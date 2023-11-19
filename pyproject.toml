@@ -1,3 +1,29 @@
+# pyproject.toml
+
 [build-system]
-requires = ["setuptools>=61.0.0", "wheel"]
+requires      = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "PyObj"
+version = "1.0.0"
+description = "Convert python dictionaries or JSON files to a compacter format!"
+readme = "README.md"
+authors = [{ name = "PatattMan" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["JSON", "web", "PyObj"]
+dependencies = [
+    'tomli; python_version < "3.11"',
+]
+requires-python = ">=3.9"
+
+[project.urls]
+Homepage = "https://github.com/ThereAre12Months/PyObj"
+
+[project.scripts]
+pyo = "src.__main__:main"
