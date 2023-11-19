@@ -38,7 +38,7 @@ product = {
     "name": "Magic Wand",
     "price": 109.5,
     "available": True,
-    "category": "magic
+    "category": "magic"
 }
 
 obj = pyobj.dump(product)
