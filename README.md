@@ -17,7 +17,7 @@ You can compile JSON to PyObj with the `pyo -c` command, followed by the name of
 
 `pyo -c otherFile.json`  
   -> compiles 'otherFile.json' to 'otherFile.pyo'
-
+***
 ### Decompiling PyObj to JSON
 You can decompile PyObj to JSON using the `pyo -d` command, followed by the PyObj file and optionally the JSON file.  
 
@@ -37,8 +37,8 @@ import pyobj
 product = {
     "name": "Magic Wand",
     "price": 109.5,
-    "available": True
-    "category": "magic,
+    "available": True,
+    "category": "magic
 }
 
 obj = pyobj.dump(product)
