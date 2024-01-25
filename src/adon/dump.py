@@ -13,11 +13,26 @@ LARGELIST = 8
 SMALLDICT = 9
 MEDDICT   = 10
 LARGEDICT = 11
+BYTES     = 12
 
 # map of values in 'VARIA'
 FALSE = 0
 TRUE  = 1
 NONE  = 2
+
+def getWeirdEndianBig(num):
+    arr = []
+
+    binary = bin(num)[2:][::-1]
+    while len(binary) > 8:
+        arr.append(int(binary[:8], base=2))
+        binary = binary[8:]
+
+    if len(binary) > 0:
+        arr.append(int(binary[::-1], base=2))
+
+    arr.reverse()
+    return arr
 
 def getWeirdEndian(num):
     big    = num >> 16
@@ -162,6 +177,22 @@ def addDict(arr:bytearray, dict_:dict):
         val = dict_[key]
         addSomeVal(arr, val)
 
+def addBytearray(arr:bytearray, ba:bytearray):
+    len_ = len(ba)
+    splitted = getWeirdEndianBig(len_)
+
+    while len(splitted) < 8:
+        splitted.insert(0, 0)
+
+    if len(splitted) > 8:
+        raise ValueError("Files can be no bigger than 1 Exabyte!")
+
+    arr.append((BYTES << 4) + splitted[0])
+    arr.extend(splitted[1:])
+
+    for byte in ba:
+        arr.append(byte)
+
 def addSomeVal(arr, object):
     if type(object) == str:
         addString(arr, object)
@@ -178,6 +209,8 @@ def addSomeVal(arr, object):
         addDict(arr, object)
     elif type(object) == list or type(object) == tuple:
         addList(arr, object)
+    elif type(object) == bytearray or type(object) == bytes:
+        addBytearray(arr, bytearray(object))
     else:
         raise NotImplementedError(f"Can't add item of type '{type(object).__name__}'")
 

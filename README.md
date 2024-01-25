@@ -67,7 +67,7 @@ with open("fileName.adon", "wb") as f:
     f.write(obj)
 ```
 
-**Note that currently only strings, integers, floats, booleans, lists and dictionaries are supported.**
+**Note that currently only strings, integers, floats, booleans, NoneType, lists, tuples, dictionaries, bytearrays and bytes are supported.**
 ***
 
 ### Decompiling Adon back to Python Object
@@ -91,3 +91,12 @@ val = adon.load(obj)
 print(val) 
 # ['banana', 'apple', 'mango']
 ```
+
+# Versioning
+
+## 1.0.1
+- Bytes + Bytearrays
+
+## 1.0.0
+- strings, integers, floats, booleans, NoneType, lists, tuples, dictionaries
+- `dump()` + `load()` functions

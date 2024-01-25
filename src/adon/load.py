@@ -12,7 +12,8 @@ DATATYPES = [
     "largelist",
     "smalldict",
     "mediumdict",
-    "largedict"
+    "largedict",
+    "bytes"
 ]
 
 
@@ -139,6 +140,22 @@ def loadVaria(obj, pointer):
 
     return val, ptr+1
 
+def loadBytes(obj, pointer):
+    ptr = pointer
+
+    amount = obj[ptr] - ((obj[ptr] >> 4) << 4)
+    ptr += 1
+    for i in range(7):
+        amount = (amount << 8) + obj[ptr]
+        ptr += 1
+
+    val = bytearray()
+    for i in range(amount):
+        val.append(obj[ptr])
+        ptr += 1
+
+    return val, ptr
+
 def loadSomeValue(obj:bytearray, pointer):
     ptr = pointer
     type_ = getType(obj[ptr])
@@ -165,6 +182,8 @@ def loadSomeValue(obj:bytearray, pointer):
             val, ptr = loadList(obj, ptr, size="medium")
         case "largelist":
             val, ptr = loadList(obj, ptr, size="large")
+        case "bytes":
+            val, ptr = loadBytes(obj, ptr)
 
     return val, ptr
 
