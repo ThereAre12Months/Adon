@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Adon"
-version = "1.0.0"
+version = "1.0.1"
 description = "Convert Python objects or JSON files to a compacter format!"
 readme = "README.md"
 authors = [{ name = "PatattMan" }]
