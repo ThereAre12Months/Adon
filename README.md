@@ -94,6 +94,10 @@ print(val)
 
 # Versioning
 
+## 1.0.2
+- Performance improvements
+- Reorganization
+
 ## 1.0.1
 - Bytes + Bytearrays
 

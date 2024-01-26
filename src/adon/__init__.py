@@ -1,4 +1,3 @@
-from .dump import dump
-from .load import load
-from .__main__ import jsonToAdon, AdonToJson
-__version__ = "1.0.1"
+from .adon import dump, load, adonToJson, jsonToAdon
+
+__version__ = "1.0.2"

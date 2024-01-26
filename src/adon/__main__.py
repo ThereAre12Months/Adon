@@ -1,7 +1,7 @@
 import json, argparse, os
 
-from .dump import dump
-from .load import load
+from .adon import adonToJson, jsonToAdon
+from . import __version__
 
 def main():
     parser = argparse.ArgumentParser(
@@ -11,8 +11,12 @@ def main():
     
     parser.add_argument('-c', '--compile', nargs="+", default=[])      # option that takes a value
     parser.add_argument('-d', '--decompile', nargs="+", default=[])
+    parser.add_argument('-v', '--version', action="store_true")
 
     args = parser.parse_args()
+
+    if args.version:
+        print(f"Version: {__version__}")
 
     if len(args.compile) == 1:
         jsonToAdon(args.compile[0], os.path.splitext(args.compile[0])+".adon")
@@ -20,24 +24,9 @@ def main():
         jsonToAdon(args.compile[0], args.compile[1])
 
     if len(args.decompile) == 1:
-        AdonToJson(args.decompile[0], os.path.splitext(args.decompile[0])+".adon")
+        adonToJson(args.decompile[0], os.path.splitext(args.decompile[0])+".adon")
     elif len(args.decompile) == 2:
-        AdonToJson(args.decompile[0], args.decompile[1])
-    
-
-def jsonToAdon(jsonPath, newPath):
-    with open(jsonPath, "r") as f:
-        dict_ = json.load(f)
-
-    with open(newPath, "wb") as f:
-        f.write(dump(dict_))
-
-def AdonToJson(oldPath, newPath):
-    with open(oldPath, "rb") as f:
-        dict_ = load(bytearray(f.read()))
-
-    with open(newPath, "w") as f:
-        f.write(json.dumps(dict_, indent=2))
+        adonToJson(args.decompile[0], args.decompile[1])
 
 if __name__ == "__main__":
     main()
