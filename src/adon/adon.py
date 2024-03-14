@@ -14,6 +14,7 @@ SMALLDICT = 9
 MEDDICT   = 10
 LARGEDICT = 11
 BYTES     = 12
+FUNCTION  = 13
 
 # map of values in 'VARIA'
 FALSE = 0
@@ -34,7 +35,8 @@ DATATYPES = [
     "smalldict",
     "mediumdict",
     "largedict",
-    "bytes"
+    "bytes",
+    "function",
 ]
 
 # Python Object to Adon
@@ -198,6 +200,45 @@ def addBytearray(arr:bytearray, ba:bytearray):
 
     arr.extend(ba)
 
+def addFunction(arr:bytearray, object):
+    CodeType = type(compile("", "", "exec"))
+
+
+    code:CodeType = object.__code__
+    globals_:dict = object.__globals__
+    globals_ = globals_.copy()
+
+    l = [
+        code.co_argcount,
+        code.co_posonlyargcount,
+        code.co_kwonlyargcount,
+        code.co_nlocals,
+        code.co_stacksize,
+        code.co_flags,
+        code.co_code,
+        code.co_consts,
+        code.co_names,
+        code.co_varnames,
+        code.co_filename,
+        code.co_name,
+        code.co_qualname,
+        code.co_firstlineno,
+        code.co_linetable,
+        code.co_exceptiontable,
+        code.co_freevars,
+        code.co_cellvars
+    ]
+
+    l = [dump(i) for i in l]
+
+    deflated = bytearray()
+    for i in l:
+        deflated.extend(i)
+
+    arr.append(FUNCTION << 4)
+    arr.extend(deflated)
+
+
 def addSomeVal(arr, object):
     if type(object) == str:
         addString(arr, object)
@@ -216,7 +257,10 @@ def addSomeVal(arr, object):
         addList(arr, object)
     elif type(object) == bytearray or type(object) == bytes:
         addBytearray(arr, bytearray(object))
+    elif type(object) == type(lambda: 0):
+        addFunction(arr, object)
     else:
+        print(object)
         raise NotImplementedError(f"Can't add item of type '{type(object).__name__}'")
 
 def dump(object:any):
@@ -361,6 +405,27 @@ def loadBytes(obj, pointer):
     
     return obj[ptr:ptr+amount], ptr+amount
 
+def loadFunction(obj, pointer):
+    ptr = pointer
+
+    ptr += 1
+    # globs, ptr = loadDict(obj, ptr)
+
+    code = []
+    for i in range(18):
+        val, ptr = loadSomeValue(obj, ptr)
+        code.append(val)
+
+    code = [(bytes(arg) if type(arg)==bytearray else (tuple(arg) if type(arg)==list else arg) ) for arg in code]
+
+    Function = type(lambda: 0)
+    CodeType = type(compile("", "", "exec"))
+
+    return Function(CodeType(
+        *code
+    ), {__name__: code[11]}), ptr
+
+
 def loadSomeValue(obj:bytearray, pointer):
     ptr = pointer
     type_ = getType(obj[ptr])
@@ -389,6 +454,8 @@ def loadSomeValue(obj:bytearray, pointer):
             val, ptr = loadList(obj, ptr, size="large")
         case "bytes":
             val, ptr = loadBytes(obj, ptr)
+        case "function":
+            val, ptr = loadFunction(obj, ptr)
 
     return val, ptr
 
